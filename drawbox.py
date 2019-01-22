@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import tkinter as tk # this is in python 3.4. For python 2.x import Tkinter
+import tkinter as tk
 from PIL import Image, ImageTk
 import os
 

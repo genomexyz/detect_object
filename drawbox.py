@@ -5,52 +5,40 @@ from PIL import Image, ImageTk
 import os
 
 #setting
-wCanvas = 700
-hCanvas = 500
+wCanvas = 1366
+hCanvas = 700
 datasave = 'box.csv'
-dirimg = '/home/genomexyz/odetection'
+dirimg = 'image'
 
 
-class ExampleApp(tk.Tk):
+class BoundingBox(tk.Tk):
 	def __init__(self):
 		tk.Tk.__init__(self)
 		self.x = self.y = 0
 		self.canvas = tk.Canvas(self, width=wCanvas, height=hCanvas, cursor="cross")
+		
+		
 		self.canvas.pack(side="top", fill="both", expand=True)
+		self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
 		self.canvas.bind("<ButtonPress-1>", self.on_button_press)
 		self.canvas.bind("<B1-Motion>", self.on_move_press)
 		self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
-
-		#add button
-		self.buttonOk = tk.Button(self, text="Ok")
-		self.buttonOk.bind("<ButtonPress-1>", self.saveboxcord)
 		
-		self.buttonDelete = tk.Button(self,text="Delete")
-		self.buttonDelete.bind("<ButtonPress-1>", self.resetbox)
-
-		self.buttonNext = tk.Button(self, text="Next")
-		self.buttonNext.bind("<ButtonPress-1>", self.nextimg)
-		
-		self.buttonPrev = tk.Button(self, text="Prev")
-		self.buttonPrev.bind("<ButtonPress-1>", self.previmg)
-
-		self.buttonOk.pack()
-		self.buttonNext.pack()
-		self.buttonPrev.pack()
-		self.buttonDelete.pack()
+		self.canvas.focus_set()
+		self.canvas.bind("<Left>", self.previmg)
+		self.canvas.bind("<Right>", self.nextimg)
+		self.canvas.bind("s", self.saveboxcord)
+		self.canvas.bind("d", self.resetbox)
 		
 		#add label of numbering
 		self.numbering = tk.Label(self, text='0')
 		self.numbering.pack()
-		
+
 		#open data save
 		self.allimg = sorted(os.listdir(dirimg))
 		self.imgptr = 0
 		
 		self.boxdata = None
-#		self.boxdata = open(datasave, 'a')
-#		self.boxdata.write('gambar,x_min,y_min,x_max,y_max')
-#		self.boxdata.close()
 
 		self.allcord = []
 
@@ -84,12 +72,14 @@ class ExampleApp(tk.Tk):
 		del self.allcord[:]
 		del self.allrect[:]
 		self.boxdata.close()
+		self.numbering.configure(text="box saved")
 	
 	def resetbox(self, event):
 		for i in xrange(len(self.allrect)):
 			self.canvas.delete(self.allrect[i])
 		del self.allcord[:]
 		del self.allrect[:]
+		self.numbering.configure(text="box reseted")
 	
 	def nextimg(self, event):
 		for i in xrange(len(self.allrect)):
@@ -144,7 +134,6 @@ class ExampleApp(tk.Tk):
 
 
 	def on_button_release(self, event):
-		#pass
 		print self.start_x, self.start_y, self.end_x, self.end_y
 		self.allcord.append([self.start_x, self.start_y, self.end_x, self.end_y])
 		self.allrect.append(self.rect)
@@ -152,5 +141,5 @@ class ExampleApp(tk.Tk):
 
 
 if __name__ == "__main__":
-	app = ExampleApp()
-	app.mainloop()
+	draw = BoundingBox()
+	draw.mainloop()

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import tkinter as tk
+import numpy as np
 from PIL import Image, ImageTk
 import os
 
@@ -8,7 +9,7 @@ import os
 wCanvas = 1366
 hCanvas = 700
 datasave = 'box.csv'
-dirimg = 'image'
+dirimg = 'image/wombat'
 
 
 class BoundingBox(tk.Tk):
@@ -49,6 +50,8 @@ class BoundingBox(tk.Tk):
 		self.start_y = None
 		self.end_x = None
 		self.end_y = None
+		self.totwidth = None
+		self.totheight = None
 
 
 		self._draw_image()
@@ -66,7 +69,9 @@ class BoundingBox(tk.Tk):
 			str(self.allcord[i][0])+','+
 			str(self.allcord[i][1])+','+
 			str(self.allcord[i][2])+','+
-			str(self.allcord[i][3])+'\n')
+			str(self.allcord[i][3])+','+
+			str(self.allcord[i][4])+','+
+			str(self.allcord[i][5])+'\n')
 		for i in xrange(len(self.allrect)):
 			self.canvas.delete(self.allrect[i])
 		del self.allcord[:]
@@ -134,8 +139,11 @@ class BoundingBox(tk.Tk):
 
 
 	def on_button_release(self, event):
-		print self.start_x, self.start_y, self.end_x, self.end_y
-		self.allcord.append([self.start_x, self.start_y, self.end_x, self.end_y])
+		self.imarray = np.array(self.im)
+		self.totwidth = len(self.imarray)
+		self.totheight = len(self.imarray[0])
+		print self.start_x, self.start_y, self.end_x, self.end_y, self.totwidth, self.totheight
+		self.allcord.append([self.start_x, self.start_y, self.end_x, self.end_y, self.totwidth, self.totheight])
 		self.allrect.append(self.rect)
 		print len(self.allcord)
 

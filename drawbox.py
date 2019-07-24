@@ -5,6 +5,17 @@ import numpy as np
 from PIL import Image, ImageTk
 import os
 
+
+try:
+    # Python 2
+    xrange
+except NameError:
+    # Python 3, xrange is now named range
+    xrange = range
+
+
+
+
 #setting
 wCanvas = 1366
 hCanvas = 700
@@ -17,20 +28,20 @@ class BoundingBox(tk.Tk):
 		tk.Tk.__init__(self)
 		self.x = self.y = 0
 		self.canvas = tk.Canvas(self, width=wCanvas, height=hCanvas, cursor="cross")
-		
-		
+
+
 		self.canvas.pack(side="top", fill="both", expand=True)
 		self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
 		self.canvas.bind("<ButtonPress-1>", self.on_button_press)
 		self.canvas.bind("<B1-Motion>", self.on_move_press)
 		self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
-		
+
 		self.canvas.focus_set()
 		self.canvas.bind("<Left>", self.previmg)
 		self.canvas.bind("<Right>", self.nextimg)
 		self.canvas.bind("s", self.saveboxcord)
 		self.canvas.bind("d", self.resetbox)
-		
+
 		#add label of numbering
 		self.numbering = tk.Label(self, text='0')
 		self.numbering.pack()
@@ -38,7 +49,7 @@ class BoundingBox(tk.Tk):
 		#open data save
 		self.allimg = sorted(os.listdir(dirimg))
 		self.imgptr = 0
-		
+
 		self.boxdata = None
 
 		self.allcord = []
@@ -78,14 +89,14 @@ class BoundingBox(tk.Tk):
 		del self.allrect[:]
 		self.boxdata.close()
 		self.numbering.configure(text="box saved")
-	
+
 	def resetbox(self, event):
 		for i in xrange(len(self.allrect)):
 			self.canvas.delete(self.allrect[i])
 		del self.allcord[:]
 		del self.allrect[:]
-		self.numbering.configure(text="box reseted")
-	
+		self.numbering.configure(text="box reset")
+
 	def nextimg(self, event):
 		for i in xrange(len(self.allrect)):
 			self.canvas.delete(self.allrect[i])
@@ -142,10 +153,10 @@ class BoundingBox(tk.Tk):
 		self.imarray = np.array(self.im)
 		self.totwidth = len(self.imarray)
 		self.totheight = len(self.imarray[0])
-		print self.start_x, self.start_y, self.end_x, self.end_y, self.totwidth, self.totheight
+		print(self.start_x, self.start_y, self.end_x, self.end_y, self.totwidth, self.totheight)
 		self.allcord.append([self.start_x, self.start_y, self.end_x, self.end_y, self.totwidth, self.totheight])
 		self.allrect.append(self.rect)
-		print len(self.allcord)
+		print (len(self.allcord))
 
 
 if __name__ == "__main__":
